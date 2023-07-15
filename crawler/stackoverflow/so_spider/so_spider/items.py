@@ -7,6 +7,5 @@ import scrapy
 
 
 class SoSpiderItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    question = scrapy.Field()
+    answer = scrapy.Field()
