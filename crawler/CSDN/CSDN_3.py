@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+# get detail web pages in CSDN with threading
+
 import time, html, json, jsonlines, threading
 from lxml import etree
 from bs4 import BeautifulSoup

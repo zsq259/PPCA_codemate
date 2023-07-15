@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+#get about keywords CSDN with asynico
+
 import asyncio, time, html, json, jsonlines
 from lxml import etree
 from bs4 import BeautifulSoup
@@ -60,9 +63,6 @@ async def work(detail_url) -> None:
     if detail_url in urls_success: return
     async with async_playwright() as playwright:
         await run(playwright, detail_url)
-
-
-# asyncio.run(work("https://ask.csdn.net/questions/7976191"))
 
 ques = []
 with open("links.out", 'r') as f:

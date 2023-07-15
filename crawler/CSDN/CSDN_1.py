@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# get web pages about keywords in CSDN with asyncio
+
 import json, jsonlines
 import asyncio
 import aiohttp, html
@@ -11,8 +13,6 @@ from bs4 import BeautifulSoup
 ques = keywords.keywords
 
 url_ = "https://so.csdn.net/api/v3/search?q={}&t=ask&p={}&s=0&tm=0&lv=-1&ft=0&l=&u=&ct=-1&pnt=-1&ry=-1&ss=-1&dct=-1&vco=1&cc=-1&sc=-1&akt=-1&art=-1&ca=1&prs=&pre=&ecc=-1&ebc=-1&ia=1&dId=&cl=-1&scl=-1&tcl=-1&platform=pc&ab_test_code_overlap=&ab_test_random_code="
-
-
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
