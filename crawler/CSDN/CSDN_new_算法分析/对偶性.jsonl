@@ -1,0 +1,1 @@
+{"Answer": "http://blog.csdn.net/wusnake123/article/details/59108426", "Konwledge_Point": "对偶性", "Question": "KKT条件 是否是对偶问题等价的条件\n\n这是我在某PPT里面看到的\n\n然而我看了一些文章和西瓜书后总结出KKT条件是\n\n对于 x∈D,  max L(x, lambda, mu) = f(x)的条件\n\n然后这两个问题的解在值上相等的条件是西瓜书里说的f和g为凸函数，h为仿射函数(Page 406)不知道值相等是否是PPT中所指的等价?\n\n请教我的理解和第一张PPT截图里的内容哪一个是对的。", "Tag": "算法分析"}

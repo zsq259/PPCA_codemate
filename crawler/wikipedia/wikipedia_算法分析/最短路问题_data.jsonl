@@ -1,0 +1,14 @@
+{"Answer": "最短路径问题是图论研究中的一个经典算法问题，旨在寻找图（由结点和路径组成的）中两结点之间的最短路径。算法具体的形式包括：\n确定起点的最短路径问题 - 也叫单源最短路问题，即已知起始结点，求最短路径的问题。在边权非负时适合使用Dijkstra算法，若边权为负时则适合使用Bellman-ford算法或者SPFA算法。\n确定终点的最短路径问题 - 与确定起点的问题相反，该问题是已知终结结点，求最短路径的问题。在无向图中该问题与确定起点的问题完全等同，在有向图中该问题等同于把所有路径方向反转的确定起点的问题。\n确定起点终点的最短路径问题 - 即已知起点和终点，求两结点之间的最短路径。\n全局最短路径问题 - 也叫多源最短路问题，求图中所有的最短路径。适合使用Floyd-Warshall算法。用于解决最短路径问题的算法被称做“最短路径算法”，有时被简称作“路径算法”。最常用的路径算法有：\nDijkstra算法\nA*算法\nBellman-Ford算法\nSPFA算法（Bellman-Ford算法的改进版本）\nFloyd-Warshall算法\nJohnson最短路算法（英语：Johnson's algorithm）\n双向搜索", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题", "Tag": "算法设计"}
+{"Answer": "无向图[编辑]", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法", "Tag": "算法设计"}
+{"Answer": "", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的无向图", "Tag": "算法设计"}
+{"Answer": "", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的无权图", "Tag": "算法设计"}
+{"Answer": "使用拓扑排序算法可以在有权值的DAG中以线性时间（\n  \n    \n      \n        θ\n        (\n        E\n        +\n        V\n        )\n      \n    \n    {\\displaystyle \\theta (E+V)}\n  \n）求解单源最短路径问题。\n", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的有向无环图", "Tag": "算法设计"}
+{"Answer": "假设边缘权重均为整数。\n", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的无负权的有向图", "Tag": "算法设计"}
+{"Answer": "\n\n计算机科学主题\n计算机程序设计主题图论\n离散数学\n算法导论\n寻路\nIEEE 802.1aq\n网络流\n最短路徑樹", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的参见", "Tag": "算法设计"}
+{"Answer": "最短路径问题是图论研究中的一个经典算法问题，旨在寻找图（由结点和路径组成的）中两结点之间的最短路径。算法具体的形式包括：\n确定起点的最短路径问题 - 也叫单源最短路问题，即已知起始结点，求最短路径的问题。在边权非负时适合使用Dijkstra算法，若边权为负时则适合使用Bellman-ford算法或者SPFA算法。\n确定终点的最短路径问题 - 与确定起点的问题相反，该问题是已知终结结点，求最短路径的问题。在无向图中该问题与确定起点的问题完全等同，在有向图中该问题等同于把所有路径方向反转的确定起点的问题。\n确定起点终点的最短路径问题 - 即已知起点和终点，求两结点之间的最短路径。\n全局最短路径问题 - 也叫多源最短路问题，求图中所有的最短路径。适合使用Floyd-Warshall算法。用于解决最短路径问题的算法被称做“最短路径算法”，有时被简称作“路径算法”。最常用的路径算法有：\nDijkstra算法\nA*算法\nBellman-Ford算法\nSPFA算法（Bellman-Ford算法的改进版本）\nFloyd-Warshall算法\nJohnson最短路算法（英语：Johnson's algorithm）\n双向搜索", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题", "Tag": "算法设计"}
+{"Answer": "无向图[编辑]", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法", "Tag": "算法设计"}
+{"Answer": "", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的无向图", "Tag": "算法设计"}
+{"Answer": "", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的无权图", "Tag": "算法设计"}
+{"Answer": "使用拓扑排序算法可以在有权值的DAG中以线性时间（\n  \n    \n      \n        θ\n        (\n        E\n        +\n        V\n        )\n      \n    \n    {\\displaystyle \\theta (E+V)}\n  \n）求解单源最短路径问题。\n", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的有向无环图", "Tag": "算法设计"}
+{"Answer": "假设边缘权重均为整数。\n", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的单源最短路径算法的无负权的有向图", "Tag": "算法设计"}
+{"Answer": "\n\n计算机科学主题\n计算机程序设计主题图论\n离散数学\n算法导论\n寻路\nIEEE 802.1aq\n网络流\n最短路徑樹", "Konwledge_Point": "最短路问题", "Question": "什么是最短路问题的参见", "Tag": "算法设计"}
