@@ -6,8 +6,9 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+import jsonlines
 
 
 class SoSpiderPipeline:
     def process_item(self, item, spider):
-        return item
+        return item 

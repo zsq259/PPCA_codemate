@@ -7,5 +7,7 @@ import scrapy
 
 
 class SoSpiderItem(scrapy.Item):
-    question = scrapy.Field()
-    answer = scrapy.Field()
+    Question = scrapy.Field()
+    Answer = scrapy.Field()
+    Knowledge_point = scrapy.Field()
+    Tag = scrapy.Field()
