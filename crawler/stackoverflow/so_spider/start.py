@@ -2,7 +2,8 @@
 from scrapy import cmdline
 from keywords import keywords
 
-key = keywords[0]
-command = ["scrapy", "crawl", "stackoverflow", "-a", "knowledge_point={}".format(key)]
-cmdline.execute(command)
+print(len(keywords))
+for key in keywords:
+    command = ["scrapy", "crawl", "stackoverflow", "-a", "knowledge_point={}".format(key)]
+    cmdline.execute(command)
 # cmdline.execute('echo "{}" | scrapy crawl stackoverflow'.split(' ').format(key))

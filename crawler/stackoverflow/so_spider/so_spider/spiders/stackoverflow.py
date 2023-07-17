@@ -1,5 +1,6 @@
-import scrapy, jsonlines
+import scrapy, jsonlines, re
 from so_spider.items import SoSpiderItem
+from scrapy.selector import Selector
 
 class StackoverflowSpider(scrapy.Spider):
     name = "stackoverflow"
@@ -24,23 +25,12 @@ class StackoverflowSpider(scrapy.Spider):
 
     def parse(self, response):
         question = ''.join(response.xpath("//div[@id='question-header']/h1//text()").extract())
-        answer = ''
-        children = response.xpath("//div[@class='post-layout ']//div[@class='s-prose js-post-body']/*")
-        for child in children:
-            if float(child.xpath("count(./div)").extract()[0]) > 0: continue
-            if float(child.xpath("count(.//code)").extract()[0]) > 0:
-                question += "```\n" + ''.join(child.xpath(".//text()").extract()) + "```\n"
-            else:
-                question += ''.join(child.xpath(".//text()").extract())
-        
-        children = response.xpath("//div[@id='answers']/div[2]//div[@class='s-prose js-post-body']/*")
-        for child in children:
-            if float(child.xpath("count(./div)").extract()[0]) > 0: continue
-            if float(child.xpath("count(.//code)").extract()[0]) > 0:
-                answer += "```\n" + ''.join(child.xpath(".//text()").extract()) + "```\n"
-            else:
-                answer += ''.join(child.xpath(".//text()").extract())
-        
+        html = response.body.decode("utf-8")
+        html = re.sub(r'<code>', r'<code>```\n', html)
+        html = re.sub(r'</code>', r'```\n</code>', html)
+        selector = Selector(text=html)
+        question += ''.join(selector.xpath("//div[@class='post-layout ']//div[@class='s-prose js-post-body']//text()").extract())
+        answer = ''.join(selector.xpath("//div[@id='answers']/div[2]//div[@class='s-prose js-post-body']//text()").extract())
         item = SoSpiderItem()
         item['Question'] = question
         item['Answer'] = answer

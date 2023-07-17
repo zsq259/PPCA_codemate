@@ -30,7 +30,7 @@ PROXIES = [
    { 'ip_port': '127.0.0.1:7890' }
 ]
 
-# LOG_LEVEL = 'WARNING' 
+LOG_LEVEL = 'WARNING' 
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -67,9 +67,11 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    "so_spider.middlewares.SoSpiderDownloaderMiddleware": 543,
-#}
+# DOWNLOADER_MIDDLEWARES = {
+   # "so_spider.middlewares.SoSpiderDownloaderMiddleware": 543,
+   # "so_spider.middlewares.RandomUserAgent": 1,
+   # "so_spider.middlewares.ProxyMiddleware": 100,
+# }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
