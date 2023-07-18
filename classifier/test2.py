@@ -45,7 +45,7 @@ def work(vectorizer, op):
 
 get_data()
 
-p1 = Process(target=work, args=(TfidfVectorizer(), 0))
+p1 = Process(target = work, args=(TfidfVectorizer(), 0))
 p2 = Process(target = work, args = [TfidfVectorizer(token_pattern=r"(?u)\b\w+\b"), 1])
 p3 = Process(target = work, args = [TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords.stopwords, max_df=0.6), 2])
 

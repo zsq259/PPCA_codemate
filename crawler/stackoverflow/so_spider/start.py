@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
+from multiprocessing import Pool, Process
 from scrapy import cmdline
 from keywords import keywords
 
-print(len(keywords))
-for key in keywords:
+
+def work(key):
     command = ["scrapy", "crawl", "stackoverflow", "-a", "knowledge_point={}".format(key)]
     cmdline.execute(command)
-# cmdline.execute('echo "{}" | scrapy crawl stackoverflow'.split(' ').format(key))
+
+processs = [Process(target = work, args=[key]) for key in keywords]
+
+for process in processs:
+    process.start()
+    process.join()
+    

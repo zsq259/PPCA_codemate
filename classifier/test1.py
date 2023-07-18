@@ -45,16 +45,14 @@ def work(vectorizer, op):
 
 get_data()
 
-thread1 = threading.Thread(target = work, args = [TfidfVectorizer(), 0])
-thread2 = threading.Thread(target = work, args = [TfidfVectorizer(token_pattern=r"(?u)\b\w+\b"), 1])
-thread3 = threading.Thread(target = work, args = [TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords.stopwords, max_df=0.6), 2])
+threads = []
 
-thread1.start()
-thread2.start()
-thread3.start()
+threads.append(threading.Thread(target = work, args = [TfidfVectorizer(), 0]))
+threads.append(threading.Thread(target = work, args = [TfidfVectorizer(token_pattern=r"(?u)\b\w+\b"), 1]))
+threads.append(threading.Thread(target = work, args = [TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords.stopwords, max_df=0.6), 2]))
 
-thread1.join()
-thread2.join()
-thread3.join()
+for thread in threads: thread.start()
+
+for thread in threads: thread.join()
 # print(vectorizer.vocabulary_)
 

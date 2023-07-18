@@ -47,7 +47,6 @@ async def run(playwright: Playwright, detail_url) -> None:
     QA_ = {"Answer": answer, "Konwledge_Point": '', "Question": question, "Tag": ''}
     urls_success.add(detail_url)
     cnt2 += 1
-    print('#', end='')
     # print(detail_url)
     # print(keywords.name , o)
     with jsonlines.open("./CSDN_精选/data.jsonl", 'a') as writer:

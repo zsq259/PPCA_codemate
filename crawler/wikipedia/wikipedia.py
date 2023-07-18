@@ -15,9 +15,9 @@ asyncio.set_event_loop(loop)
 url_ = "https://zh.wikipedia.org/w/index.php?search={}"
 with open("./wikipedia_{}/success.json".format(keywords.name), 'r') as f:
     urls_success = set(json.load(f))
-cnt1 = 0
-cnt2 = 0
-cnt3 = 0
+cnt1 = 0 # all urls
+cnt2 = 0 # urls succeeded
+cnt3 = 0 # urls have no search result
 
 async def write_QA(question, answer, knowledge_point):
     QA_ = {"Answer": answer, "Konwledge_Point": knowledge_point, "Question": question, "Tag": keywords.name}

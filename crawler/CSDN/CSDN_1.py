@@ -26,8 +26,6 @@ async def traverse(s):
     s = html.unescape(s)
     soup = BeautifulSoup(s, 'html.parser')
     text = soup.get_text()
-    # print("s: ", s)
-    # print("text:", text)
     return text
 
 async def get_detail(o, detail_url, answer):
@@ -49,8 +47,6 @@ async def get_detail(o, detail_url, answer):
             QA_ = {"Answer": answer, "Konwledge_Point": o, "Question": question, "Tag": keywords.name}
             urls_success.add(detail_url)
             cnt2 = cnt2 + 1
-            # print(detail_url)
-            # print(keywords.name , o)
             with jsonlines.open("./CSDN_new_{}/{}.jsonl".format(keywords.name, o), 'a') as writer:
                 writer.write(QA_)
     
@@ -58,7 +54,6 @@ async def get_detail(o, detail_url, answer):
 async def get_knowledge(o):
     for i in range(1, 50):
         url = url_.format(o, i)
-        # print(url)
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 result_dic = await response.json()
@@ -67,7 +62,6 @@ async def get_knowledge(o):
                 if QA_list == None: return
                 for QA in QA_list:
                     await get_detail(o, QA['url'], QA['answer'])
-                # task = [asyncio.ensure_future(get_detail(o, QA['url'], QA['answer'])) for QA in QA_list]
     print("{} get!".format(o))
 
 
@@ -75,6 +69,6 @@ Tasks = [asyncio.ensure_future(get_knowledge(o)) for o in ques]
 # Tasks = [asyncio.ensure_future(get_knowledge(ques[i])) for i in range(0, 7)]
 loop.run_until_complete(asyncio.wait(Tasks))
 print(cnt1, cnt2)
-# f = open("./CSDN_new_{}/success.json".format(keywords.name), 'w')
+f = open("./CSDN_new_{}/success.json".format(keywords.name), 'w')
 json.dump(list(urls_success), f)
 f.close()
