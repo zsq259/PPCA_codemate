@@ -60,7 +60,6 @@ def work(detail_url) -> None:
         return
     with sync_playwright() as playwright:
         run(playwright, detail_url)
-    print("ok")
     pool_sema.release()
 
 urls_success = set()
