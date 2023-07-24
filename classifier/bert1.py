@@ -33,8 +33,9 @@ def collate(data):
     labels = [i[1] for i in data]
     data = token.batch_encode_plus(batch_text_or_text_pairs=sents,
                                    truncation=True,
-                                   padding='max_length',
-                                   max_length=500,
+                                   padding = True,
+                                #    padding='max_length',
+                                #    max_length=500,
                                    return_tensors='pt',
                                    return_length=True)
     input_ids = data['input_ids']
