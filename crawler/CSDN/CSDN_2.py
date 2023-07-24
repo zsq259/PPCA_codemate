@@ -30,8 +30,10 @@ async def run(playwright: Playwright, detail_url) -> None:
     browser = await playwright.chromium.launch(headless=True)
     context = await browser.new_context()
     page = await context.new_page()
-    await page.goto(detail_url)
-    time.sleep(1)
+    print("ok")
+    await page.goto(detail_url, timeout = 240000)
+    
+    time.sleep(2)
     html = await page.content()
     html = re.sub(r'<code(\s.*?)>', r'<code\1>```\n', html)
     html = re.sub(r'</code>', r'```\n</code>', html)
@@ -74,6 +76,7 @@ asyncio.set_event_loop(loop)
 
 semaphore = asyncio.Semaphore(5)
 Tasks = [asyncio.ensure_future(work(semaphore, o)) for o in ques]
+# Tasks = [asyncio.ensure_future(work(semaphore, 'https://ask.csdn.net/questions/7928411'))]
 # Tasks = [asyncio.ensure_future(work(ques[i])) for i in range(70, 120)]
 loop.run_until_complete(asyncio.wait(Tasks))
 print(cnt1, cnt2)

@@ -10,6 +10,8 @@
 
 所有爬虫均实现了成功爬取链接的记录，存储在对应的 `success.out` 中，在爬取时只爬取未成功的链接。即使程序运行中断，再次启动程序也能实现无重复无遗漏的爬取。
 
+CSDN 精华 和 stackoverflow 的爬虫实现了对代码块的识别，爬取的代码块会用 ` ```\n ` 包裹起来。
+
 爬取的内容为 `算法分析` 相关，搜索的关键词列表为：
 
 ```
@@ -116,8 +118,13 @@ CSDN 网站分为两部分：
 
 人工进行人机验证，在接下来的 5min 内网站不会跳转人机验证页面，在这段时间利用爬虫爬取。
 
-- [] 需要建立 ip 池解决请求太多被封 ip 的问题。
+* [ ] 需要建立 ip 池解决请求太多被封 ip 的问题。
 
 ## 分类器
 
-建议在 blog 中阅读：[https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/](https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/)
+学习记录：[https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/](https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/)
+
+使用 `jieba` 进行分词。
+
+利用 `sklearn`， 使用 `TfidfVectorizer` 实现向量化，再使用 `RandomForestClassifier` 进行随机森林算法。
+

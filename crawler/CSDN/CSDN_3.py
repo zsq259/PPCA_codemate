@@ -3,7 +3,7 @@
 
 # get detail web pages in CSDN with threading
 
-import time, html, json, jsonlines, threading
+import time, html, json, jsonlines, threading, re
 from lxml import etree
 from bs4 import BeautifulSoup
 
@@ -28,7 +28,10 @@ def run(playwright: Playwright, detail_url) -> None:
     page = context.new_page()
     page.goto(detail_url)
     time.sleep(1)
-    tree = etree.HTML(page.content())
+    html = page.content()
+    html = re.sub(r'<code(\s.*?)>', r'<code\1>```\n', html)
+    html = re.sub(r'</code>', r'```\n</code>', html)
+    tree = etree.HTML(html)
     title = tree.xpath("//section[@class='title-box']/h1/text()")[0]
     question = tree.xpath('//section[@class="question_show_box"]//div[@class="md_content_show"]//text()')
     answer = tree.xpath("(//div[@class='answer_box']//div[@class='answer-content-item'])[1]//text()")
