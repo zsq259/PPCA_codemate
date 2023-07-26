@@ -26,12 +26,13 @@ def get_file(file_name, tag):
             record = json.loads(line)
             data_words = "Question: " + ' '.join(jieba.cut(record['Question']))
             data_words += "Answer: " + ' '.join(jieba.cut(record['Answer']))
+            data_words.replace('```\n', '[CODE]')
             datas.append(data_words)
             labels.append(tag)
 
 def get_data():
     global train_sum
-    get_file("datas/CSDN.jsonl", 1)
+    get_file("datas/CSDN1.jsonl", 1)
     get_file("datas/highQualityTrain.jsonl", 1)
     get_file("datas/lowQualityTrain.jsonl", 0)
     train_sum = len(datas)
@@ -72,9 +73,11 @@ def work(op):
     rf_classifier = RandomForestClassifier(n_estimators = 155, random_state = 43)
     rf_classifier.fit(X_train, y_train)
     y_pred = rf_classifier.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    print(op, accuracy, precision)
+    # accuracy = accuracy_score(y_test, y_pred)
+    # precision = precision_score(y_test, y_pred)
+    # print(op, accuracy, precision)
+    print("train score:", op, rf_classifier.score(X_train, y_train))
+    print("test score:", op, rf_classifier.score(X_test, y_test))
 
 get_data()
 work(0)

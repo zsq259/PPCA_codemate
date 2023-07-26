@@ -118,13 +118,69 @@ CSDN 网站分为两部分：
 
 人工进行人机验证，在接下来的 5min 内网站不会跳转人机验证页面，在这段时间利用爬虫爬取。
 
-* [ ] 需要建立 ip 池解决请求太多被封 ip 的问题。
+如果需要提高爬虫速度的话，需要建立 ip 池解决请求太多被封 ip 的问题。但因为没有足够多的 ip 所以没能实现。
 
 ## 分类器
 
-学习记录：[https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/](https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/)
+前期学习记录：[https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/](https://hastin-blog.cn/post/%E6%96%87%E6%9C%AC%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%92%8C%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83/)
+
+总体分为两部分，首先将爬取的数据以问题+答案的形式拼成一句话，将其向量化以能被机器接受。再用已经标注好（标记一个问答的质量好坏）的数据集训练模型，并让模型对给出的测试集中的问答进行质量的分类预测。
+
+在前期，使用 `sklearn` 提供的相关库进行训练，后期则是下载并使用 `huggingface` 上的预训练模型。
+
+### 前期
 
 使用 `jieba` 进行分词。
 
-利用 `sklearn`， 使用 `TfidfVectorizer` 实现向量化，再使用 `RandomForestClassifier` 进行随机森林算法。
+采取了若干种不同的模型组合尝试。
 
+向量化模型的选择：
+
+- `TfidfVectorizer`
+
+- `CountVectorizer`
+
+- `Word2Vec`
+
+分类器的算法实现的选择：
+
+- `RandomForestClassifier`（随机森林）
+
+- `MultinomialNB`（多项式朴素贝叶斯）
+
+- `ComplementNB`（补充朴素贝叶斯）
+
+在 
+
+下表显示了训练数据：
+
+| 数据                                 | 模型                                                         | 训练集预测准确率 | 测试集预测准确率         |
+| ------------------------------------ | ------------------------------------------------------------ | ------------------------------------ | ------------------ |
+| basic                                | TfidfVectorizer(), RandomForestClassifier()                 | 0.9947319491788038 | 0.8345724907063197 |
+| basic | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9947319491788038 | 0.8392193308550185 |
+| basic | CountVectorizer(), MultinomialNB(alpha = 0.1) | 0.8564197913438695 | 0.7379182156133829 |
+| basic | CountVectorizer(), ComplementNB(alpha = 0.1) | 0.8562132011155872 | 0.7379182156133829 |
+| basic | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9947319491788038 | 0.7964684014869888 |
+| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                 | 0.9957112801424178 | 0.8631732168850073 |
+| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8653566229985444 |
+| basic+CSDN精华 | CountVectorizer(), MultinomialNB(alpha = 0.1) | 0.8528078977180774 | 0.7561863173216885 |
+| basic+CSDN精华 | CountVectorizer(), ComplementNB(alpha = 0.1) | 0.8540216863570157 | 0.754730713245997 |
+| basic+CSDN精华 | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957112801424178 | 0.8377001455604076 |
+| basic+CSDN精华（代码用 ```\n 包围）  | TfidfVectorizer(), RandomForestClassifier()                 | 0.9957112801424178 | 0.8602620087336245 |
+| basic+CSDN精华（代码用 ```\n 包围） | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
+| basic+CSDN精华（代码用 ```\n 包围） | CountVectorizer(), MultinomialNB(alpha = 0.1) | 0.8510276743809678 | 0.74745269286754 |
+| basic+CSDN精华（代码用 ```\n 包围） | CountVectorizer(), ComplementNB(alpha = 0.1) | 0.853050655445865 | 0.74745269286754 |
+| basic+CSDN精华（代码用 ```\n 包围） | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957921993850137 | 0.8304221251819505 |
+| basic+CSDN精华（代码用 [code] 包围） | TfidfVectorizer(), RandomForestClassifier()               | 0.9957112801424178 | 0.8566229985443959 |
+| basic+CSDN精华（代码用 [code] 包围） | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
+| basic+CSDN精华（代码用 [code] 包围） | CountVectorizer(), MultinomialNB(alpha = 0.1) | 0.8510276743809678 | 0.74745269286754 |
+| basic+CSDN精华（代码用 [code] 包围） | CountVectorizer(), ComplementNB(alpha = 0.1) | 0.853050655445865 | 0.74745269286754 |
+| basic+CSDN精华（代码用 [code] 包围） | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957921993850137 | 0.8384279475982532 |
+
+其中 `数据` 一栏的 `basic` 代表下发的已经标记好的之前爬取的 CSDN 和 Wikipedia 的问答。而 CSDN精华则默认为高质量。
+
+可以看出，TfidfVectorizer() 与 RandomForestClassifier() 的组合效果是最好的，而朴素贝叶斯的组合则表现最差。。这或许与我们分类的问答形式有关。所以后续的进一步调参将只对于 TfidfVectorizer() 与 RandomForestClassifier() 进行。
+
+### 后期
+
+在前期我们的模型都是直接用的 `sklearn` 库中给出的，代码实现非常容易。而现在，我们要使用 `huggingface` 中的 bert 预训练模型，并使用深度学习，从代码接触神经网络。

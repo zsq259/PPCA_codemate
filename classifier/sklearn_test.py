@@ -43,7 +43,7 @@ def work(op, vectorizer, classifier):
     X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.1, random_state=47)
     # X_train, X_test, y_train, y_test = X[:train_sum], X[train_sum:], labels[:train_sum], labels[train_sum:]
     classifier.fit(X_train, y_train)
-    # print("train score:", op, classifier.score(X_train, y_train))
+    print("train score:", op, classifier.score(X_train, y_train))
     print("test score:", op, classifier.score(X_test, y_test))
 
 get_data()
