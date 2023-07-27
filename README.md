@@ -186,3 +186,15 @@ CSDN 网站分为两部分：
 ### 后期
 
 在前期我们的模型都是直接用的 `sklearn` 库中给出的，代码实现非常容易。而现在，我们要使用 `huggingface` 中的 bert 预训练模型，并使用深度学习，从代码接触神经网络。
+
+| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default) | 训练集预测准确率 | 测试集预测准确率                |
+| ----- | ------------------------------------------------------------ | ---------------- | ------------------------------- |
+| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   |                  | ![](./classifier/results/2.png) |
+| basic | "algolet/bert-large-chinese", 32, 512, True, 5e-5, Model1    |                  |                                 |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                  |                                 |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 |                  | ![](./classifier/results/8.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            |                  |                                 |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             |                  | ![](./classifier/results/5.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            |                  | ![](./classifier/results/7.png) |
+| basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             |                  | ![](./classifier/results/6.png) |
+| basic |                                                              |                  |                                 |
