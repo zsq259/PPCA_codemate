@@ -6,6 +6,8 @@
 
 爬虫学习&编写记录：[https://hastin-blog.cn/post/python%E7%88%AC%E8%99%AB%E5%AE%9E%E5%BD%95/](https://hastin-blog.cn/post/python%E7%88%AC%E8%99%AB%E5%AE%9E%E5%BD%95/)
 
+爬虫进阶学习记录：[https://hastin-blog.cn/post/python%E7%88%AC%E8%99%AB%E8%BF%9B%E9%98%B6/](https://hastin-blog.cn/post/python%E7%88%AC%E8%99%AB%E8%BF%9B%E9%98%B6/)
+
 本项目实现了对 CSDN 问答，Wikipedia，stackoverflow 三个网站的数据爬取。
 
 所有爬虫均实现了成功爬取链接的记录，存储在对应的 `success.out` 中，在爬取时只爬取未成功的链接。即使程序运行中断，再次启动程序也能实现无重复无遗漏的爬取。
@@ -126,7 +128,7 @@ CSDN 网站分为两部分：
 
 总体分为两部分，首先将爬取的数据以问题+答案的形式拼成一句话，将其向量化以能被机器接受。再用已经标注好（标记一个问答的质量好坏）的数据集训练模型，并让模型对给出的测试集中的问答进行质量的分类预测。
 
-在前期，使用 `sklearn` 提供的相关库进行训练，后期则是下载并使用 `huggingface` 上的预训练模型。
+在前期，使用 `sklearn` 提供的相关库，主要用机器学习进行训练，后期则是下载并使用 `huggingface` 上的预训练模型并手动构建神经网络。
 
 ### 前期
 
@@ -185,7 +187,7 @@ CSDN 网站分为两部分：
 
 ### 后期
 
-在前期我们的模型都是直接用的 `sklearn` 库中给出的，代码实现非常容易。而现在，我们要使用 `huggingface` 中的 bert 预训练模型，并使用深度学习，从代码接触神经网络。
+主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
 
 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default) | 训练集预测准确率 | 测试集预测准确率                |
 | ----- | ------------------------------------------------------------ | ---------------- | ------------------------------- |

@@ -138,16 +138,15 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
 
         print("test {} score:".format(cnt_num), correct / total)
         test_accuracy.append(correct / total)
-    
-
 
     for i in range(0, 100):
         train(i)
         test(i)
-        test(i)
+    save_path = "./model.pt"
+    torch.save(model.state_dict(), save_path)
 
 get_data()
-work('bert-base-chinese', 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5)
+work('bert-base-chinese', "bert-base-chinese", 32, 512, False, 5e-6, 1e-5)
 print(test_accuracy)
 
 

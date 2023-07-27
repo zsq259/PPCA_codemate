@@ -24,7 +24,7 @@ def get_file(file_name, tag, op):
 
 def get_data():
     global train_sum
-    # get_file("datas/CSDN1.jsonl", 1)
+#     get_file("datas/CSDN1.jsonl", 1)
     # get_file("../input/dataset/datas/highQualityTrain.jsonl", 1, 1)
     # get_file("../input/dataset/datas/lowQualityTrain.jsonl", 0, 1)
     # train_sum = len(dataset)
@@ -38,14 +38,14 @@ def get_data():
 
 
 
-def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learning_rate):
+def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learning_rate, weight_decay_):
     class Model(torch.nn.Module):
         def __init__(self):
             super().__init__()
-            self.fc1 = torch.nn.Sequential( torch.nn.Linear(768, 1600), torch.nn.BatchNorm1d(1600), torch.nn.ReLU(True))
-            self.fc2 = torch.nn.Sequential( torch.nn.Linear(1600, 800), torch.nn.BatchNorm1d(800), torch.nn.ReLU(True))
-            self.fc3 = torch.nn.Sequential( torch.nn.Linear(800, 200), torch.nn.BatchNorm1d(200), torch.nn.ReLU(True))
-            self.fc4 = torch.nn.Linear(200, 2)
+            self.fc1 = torch.nn.Sequential( torch.nn.Conv1d(1, 16, kernel_size=3,padding=1),torch.nn.BatchNorm1d(16), torch.nn.ReLU(True) )
+            self.fc2 = torch.nn.Sequential( torch.nn.Conv1d(16, 64, kernel_size=3,padding=1),torch.nn.BatchNorm1d(64), torch.nn.ReLU(True) )
+            self.fc3 = torch.nn.Sequential( torch.nn.Conv1d(64, 256, kernel_size=3,padding=1),torch.nn.BatchNorm1d(256), torch.nn.ReLU(True) )
+            self.fc4 = torch.nn.Sequential( torch.nn.Linear(256*768, 2), torch.nn.BatchNorm1d(2), torch.nn.ReLU(True))
 
         def forward(self, input_ids, attention_mask, token_type_ids):
             input_ids = input_ids.to(device)
@@ -53,15 +53,22 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
             token_type_ids = token_type_ids.to(device)
             with torch.no_grad():
                 out = pretrained(input_ids=input_ids,
-                        attention_mask=attention_mask,
-                        token_type_ids=token_type_ids)
+                                attention_mask=attention_mask,
+                                token_type_ids=token_type_ids)
             out = out.last_hidden_state[:, 0]
+            out = out.view(out.shape[0],-1,768)
             out = self.fc1(out)
             out = self.fc2(out)
             out = self.fc3(out)
+            out = out.view(out.shape[0],-1)
             out = self.fc4(out)
             out = out.softmax(dim=1)
             return out
+
+    model = Model().to(device)
+    optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay_)
+    criterion = torch.nn.CrossEntropyLoss()
+    model.train()
 
     def collate(data):
         sents = [i[0] for i in data]
@@ -134,18 +141,14 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
         print("test {} score:".format(cnt_num), correct / total)
         test_accuracy.append(correct / total)
     
-    model = Model().to(device)
-    optimizer = AdamW(model.parameters(), lr=learning_rate)
-    criterion = torch.nn.CrossEntropyLoss()
-    model.train()
 
 
-    for i in range(0, 100):
+    for i in range(0, 500):
         train(i)
         test(i)
 
 get_data()
-work('bert-base-chinese', "bert-base-chinese", 32, 512, False, 5e-5)
+work('bert-base-chinese', 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5)
 print(test_accuracy)
 
 
