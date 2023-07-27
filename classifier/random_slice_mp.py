@@ -4,13 +4,15 @@
 from multiprocessing import Pool, Process
 from transformers import BertTokenizer, BertModel, AutoModel
 from torch.optim import AdamW
-import json, torch
+import json, torch, random, multiprocessing
+import torch.multiprocessing as mp
 
+mp.set_start_method('spawn')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 train_sum = 0
 dataset = []
 testset = []
-test_accuracy = []
+test_accuracy = [[], [], []]
 
 def get_file(file_name, tag, op):
     with open(file_name, 'r', encoding='utf-8') as f:
@@ -37,34 +39,33 @@ def get_data():
     get_file("datas/lowQualityTest.jsonl", 0, 0)
 
 
+class Model(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = torch.nn.Sequential( torch.nn.Linear(768, 1600), torch.nn.BatchNorm1d(1600), torch.nn.ReLU(True))
+        self.fc2 = torch.nn.Sequential( torch.nn.Linear(1600, 800), torch.nn.BatchNorm1d(800), torch.nn.ReLU(True))
+        self.fc3 = torch.nn.Sequential( torch.nn.Linear(800, 200), torch.nn.BatchNorm1d(200), torch.nn.ReLU(True))
+        self.fc4 = torch.nn.Linear(200, 2)
 
-def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learning_rate, weight_decay_):
-    class Model(torch.nn.Module):
-        def __init__(self):
-            super().__init__()
-            self.fc1 = torch.nn.Sequential( torch.nn.Conv1d(1, 16, kernel_size=3,padding=1),torch.nn.BatchNorm1d(16), torch.nn.ReLU(True) )
-            self.fc2 = torch.nn.Sequential( torch.nn.Conv1d(16, 64, kernel_size=3,padding=1),torch.nn.BatchNorm1d(64), torch.nn.ReLU(True) )
-            self.fc3 = torch.nn.Sequential( torch.nn.Conv1d(64, 256, kernel_size=3,padding=1),torch.nn.BatchNorm1d(256), torch.nn.ReLU(True) )
-            self.fc4 = torch.nn.Sequential( torch.nn.Linear(256*768, 2), torch.nn.BatchNorm1d(2), torch.nn.ReLU(True))
+    def forward(self, input_ids, attention_mask, token_type_ids):
+        input_ids = input_ids.to(device)
+        attention_mask = attention_mask.to(device)
+        token_type_ids = token_type_ids.to(device)
+        with torch.no_grad():
+            out = pretrained(input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    token_type_ids=token_type_ids)
+        out = out.last_hidden_state[:, 0]
+        out = self.fc1(out)
+        out = self.fc2(out)
+        out = self.fc3(out)
+        out = self.fc4(out)
+        out = out.softmax(dim=1)
+        return out
 
-        def forward(self, input_ids, attention_mask, token_type_ids):
-            input_ids = input_ids.to(device)
-            attention_mask = attention_mask.to(device)
-            token_type_ids = token_type_ids.to(device)
-            with torch.no_grad():
-                out = pretrained(input_ids=input_ids,
-                                attention_mask=attention_mask,
-                                token_type_ids=token_type_ids)
-            out = out.last_hidden_state[:, 0]
-            out = out.view(out.shape[0],-1,768)
-            out = self.fc1(out)
-            out = self.fc2(out)
-            out = self.fc3(out)
-            out = out.view(out.shape[0],-1)
-            out = self.fc4(out)
-            out = out.softmax(dim=1)
-            return out
 
+def work(work_id, tokenizer, model_name, batch_size_, max_length, requires_grad_op, learning_rate, weight_decay_):
+    
     model = Model().to(device)
     optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay_)
     criterion = torch.nn.CrossEntropyLoss()
@@ -73,6 +74,8 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
     def collate(data):
         sents = [i[0] for i in data]
         labels = [i[1] for i in data]
+        st = random.randint(0, max(0, len(sents) - max_length - 1))
+        sents, labels = sents[st:], labels[st:]
         data = token.batch_encode_plus(batch_text_or_text_pairs=sents,
                                     truncation=True,
                                     #    padding=False,
@@ -87,7 +90,7 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
         return input_ids, attention_mask, token_type_ids, labels
 
     def train(cnt_num):
-        print("start {}-th train".format(cnt_num))
+        print("{}: start {}-th train".format(work_id, cnt_num))
         loader = torch.utils.data.DataLoader(dataset=dataset,
                                         batch_size=batch_size_,
                                         collate_fn=collate,
@@ -104,7 +107,7 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
-            if i % 50 == 0:
+            if i % 100 == 0:
                 out = out.argmax(dim=1)
                 accuracy = (out == labels).sum().item() / len(labels)
                 print(i, loss.item(), accuracy)
@@ -138,17 +141,26 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
             correct += (out == labels).sum().item()
             total += len(labels)
 
-        print("test {} score:".format(cnt_num), correct / total)
-        test_accuracy.append(correct / total)
+        print("{}: test {} score:".format(work_id, cnt_num), correct / total)
+        test_accuracy[work_id].append(correct / total)
 
-    for i in range(0, 500):
+    for i in range(0, 100):
         train(i)
         test(i)
-    save_path = "./model.pt"
+    save_path = "{}_model.pt".format(work_id)
     torch.save(model.state_dict(), save_path)
 
-get_data()
-work('bert-base-chinese', 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5)
-print(test_accuracy)
+if __name__ == '__main__':
+    get_data()
 
+    processes = []
+
+    processes.append(Process(target=work, args=(0, 'bert-base-chinese', "bert-base-chinese", 32, 512, False, 5e-5, 1e-5)))
+    # processes.append(Process(target=work, args=(1, 'bert-base-chinese', "bert-base-chinese", 32, 512, True, 5e-5, 1e-5)))
+    processes.append(Process(target=work, args=(1, 'bert-base-chinese', "bert-base-chinese", 32, 512, False, 5e-6, 1e-5)))
+    processes.append(Process(target=work, args=(2, 'bert-base-chinese', "bert-base-chinese", 32, 512, False, 1e-3, 1e-5)))
+    for p in processes: p.start()
+    for p in processes: p.join()
+
+    for i in range(0, len(processes)): print(test_accuracy[i])
 

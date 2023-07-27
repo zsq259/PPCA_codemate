@@ -146,7 +146,7 @@ def work(tokenizer, model_name, batch_size_, max_length, requires_grad_op, learn
     torch.save(model.state_dict(), save_path)
 
 get_data()
-work('bert-base-chinese', "bert-base-chinese", 32, 512, False, 5e-6, 1e-5)
+work('bert-base-chinese', "bert-base-chinese", 32, 512, False, 5e-5, 1e-5)
 print(test_accuracy)
 
 

@@ -189,14 +189,59 @@ CSDN 网站分为两部分：
 
 主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
 
-| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default) | 训练集预测准确率 | 测试集预测准确率                |
-| ----- | ------------------------------------------------------------ | ---------------- | ------------------------------- |
-| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   |                  | ![](./classifier/results/2.png) |
-| basic | "algolet/bert-large-chinese", 32, 512, True, 5e-5, Model1    |                  |                                 |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                  |                                 |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 |                  | ![](./classifier/results/8.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            |                  |                                 |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             |                  | ![](./classifier/results/5.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            |                  | ![](./classifier/results/7.png) |
-| basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             |                  | ![](./classifier/results/6.png) |
-| basic |                                                              |                  |                                 |
+主要对于以下参数进行调整（已经尝试过的）。
+
+对于每组数据一般进行 100 轮迭代（将训练数据反复喂给模型），但由于算力问题，以及云端平台的不稳定性，有部分数据的轮数少一些，而且由于前期轮次的效果不是很好，所以就没有重新测试。
+
+- 预训练模型的选择
+  - `bert-base-chinese`
+  - `algolet/bert-large-chinese`
+  - `allenai/longformer-base-4096`
+  
+- 下游模型中的神经网络层
+
+  - `Model1`由四个全连接层组成。每个全连接层都由线性层和批量归一化层组成，并使用ReLU激活函数进行非线性变换。
+  - `Model2`是多层卷积神经网络。
+
+- batch_size
+  - 16
+  - 32
+  
+- max_length（预训练模型接受一句话的最大长度）
+  - 512
+  - 1024（仅`algolet/bert-large-chinese` 可用）
+  - 2048（仅`algolet/bert-large-chinese` 可用）
+  
+  预训练模型限制了能接受的最大的长度，而我们有不少数据都是超过这个长度的，所以实际上模型接受的只是句子的一部分。而默认情况下，则是从句首截取指定长度。这也是一开始遇到的一个问题。而可能的解决办法有三种：
+  
+  - [x] 随机在句子中选取一段。
+  - [ ] 使用滑动窗口将句子拆成若干个句子。
+  - [x] 调整模型使其能接受更长的句子，或使用其他模型。
+  
+- requires_grad（是否梯度回传，即是否修改预训练模型的参数，也就是微调 bert）
+
+- learning_rate（梯度下降时的学习率）
+  - 1e-3
+  - 5e-5
+  - 5e-6
+  
+- weight_decay（减少过拟合的可能，设置过大可能导致欠拟合）
+  - 1e-5
+
+以下是目前已经尝试过的参数及其数据（有些还在测试中）：
+
+| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 训练集预测准确率 | 测试集预测准确率                 |
+| ----- | ------------------------------------------------------------ | ---------------- | -------------------------------- |
+| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   |                  | ![](./classifier/results/2.png)  |
+| basic | "algolet/bert-large-chinese", 32, 512, True, 5e-5, Model1    |                  |                                  |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                  |                                  |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 |                  | ![](./classifier/results/8.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            |                  |                                  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      |                  | ![](./classifier/results/12.png) |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             |                  | ![](./classifier/results/5.png)  |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, 1e-5, Model1       |                  | ![](./classifier/results/10.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            |                  | ![](./classifier/results/7.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1      |                  | ![](./classifier/results/11.png) |
+| basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             |                  | ![](./classifier/results/6.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-6, 1e-5, Model1      |                  |                                  |
+|       |                                                              |                  |                                  |
