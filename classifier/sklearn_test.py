@@ -53,10 +53,10 @@ stop_words_file = 'stopwords.txt'
 stopwords = get_custom_stopwords(stop_words_file)
 
 
-processs.append(Process(target = work, args=(0, CountVectorizer(), MultinomialNB(alpha = 0.1))))
-processs.append(Process(target = work, args=(1, CountVectorizer(), ComplementNB(alpha = 0.1))))
-processs.append(Process(target = work, args=(2, TfidfVectorizer(), RandomForestClassifier())))
-processs.append(Process(target = work, args=(3, TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43))))
+processs.append(Process(target = work, args=(0, TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(1, TfidfVectorizer(max_df=0.6, stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(2, TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(3, TfidfVectorizer(stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
 
 for p in processs: p.start()
 

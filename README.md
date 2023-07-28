@@ -116,9 +116,12 @@ CSDN 网站分为两部分：
 
 ### stackoverflow
 
-与 CSDN 没有太大区别，但是有人机验证和请求太多封 ip 的反爬机制。
+与 CSDN 没有太大区别，但是有人机验证和请求太多封 ip 的反爬虫机制。
 
 人工进行人机验证，在接下来的 5min 内网站不会跳转人机验证页面，在这段时间利用爬虫爬取。
+
+[`src.py`](crawler/stackoverflow/src.py) 中实现了在搜索关键词后自动翻页并爬取所有通往具体问答页面的链接。
+[`so_spider`](crawler/stackoverflow/so_spider) 文件夹下则是利用 `scrapy` 框架，对所有具体问答页面进行爬取。
 
 如果需要提高爬虫速度的话，需要建立 ip 池解决请求太多被封 ip 的问题。但因为没有足够多的 ip 所以没能实现。
 
@@ -230,18 +233,18 @@ CSDN 网站分为两部分：
 
 以下是目前已经尝试过的参数及其数据（有些还在测试中）：
 
-| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 训练集预测准确率 | 测试集预测准确率                 |
-| ----- | ------------------------------------------------------------ | ---------------- | -------------------------------- |
-| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   |                  | ![](./classifier/results/2.png)  |
-| basic | "algolet/bert-large-chinese", 32, 512, True, 5e-5, Model1    |                  |                                  |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                  |                                  |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 |                  | ![](./classifier/results/8.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            |                  |                                  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      |                  | ![](./classifier/results/12.png) |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             |                  | ![](./classifier/results/5.png)  |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, 1e-5, Model1       |                  | ![](./classifier/results/10.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            |                  | ![](./classifier/results/7.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1      |                  | ![](./classifier/results/11.png) |
-| basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             |                  | ![](./classifier/results/6.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-6, 1e-5, Model1      |                  |                                  |
-|       |                                                              |                  |                                  |
+| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 测试集预测准确率                 |
+| ----- | ------------------------------------------------------------ | -------------------------------- |
+| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   | ![](./classifier/results/2.png)  |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                                  |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 | ![](./classifier/results/8.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](./classifier/results/15.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      | ![](./classifier/results/12.png) |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             | ![](./classifier/results/5.png)  |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, 1e-5, Model1       | ![](./classifier/results/10.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            | ![](./classifier/results/7.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1      | ![](./classifier/results/11.png) |
+| basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             | ![](./classifier/results/6.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-6, 1e-5, Model1      |                                  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model1, random slice | ![](./classifier/results/13.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1, random slice | ![](./classifier/results/14.png) |
