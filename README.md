@@ -188,63 +188,180 @@ CSDN 网站分为两部分：
 
 可以看出，TfidfVectorizer() 与 RandomForestClassifier() 的组合效果是最好的，而朴素贝叶斯的组合则表现最差。。这或许与我们分类的问答形式有关。所以后续的进一步调参将只对于 TfidfVectorizer() 与 RandomForestClassifier() 进行。
 
+同时可以发现，在加入 CSDN 精华后，准确率上升了不少。但是代码块是否被包围似乎对最终的准确率影响不大。
+
+经过进一步调整 `RandomForestClassifier()` 参数后的数据：
+
+| 编号 | 数据           | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
+| ---- | -------------- | ------------------------------------------------------------ | ------------------ | ------------------ |
+| 21   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8602620087336245 |
+| 22   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=55)   | 0.9956303608998219 | 0.858806404657933  |
+| 23   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=200)  | 0.9957112801424178 | 0.8573508005822417 |
+| 24   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
+| 25   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=47) | 0.9957112801424178 | 0.8580786026200873 |
+| 26   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=97) | 0.9957112801424178 | 0.8566229985443959 |
+| 27   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=127) | 0.9957112801424178 | 0.8580786026200873 |
+| 28   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=23) | 0.9957112801424178 | 0.8624454148471615 |
+| 29   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=59) | 0.9957112801424178 | 0.8573508005822417 |
+| 30   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8624454148471615 |
+
+可以发现随机森林中决策树的数量以及随机数的选取对最终的准确率影响并不大。
+
+之后再尝试调整 `TfidfVectorizer()` 的参数：
+
+| 编号 | 数据           | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
+| ---- | -------------- | ------------------------------------------------------------ | ------------------ | ------------------ |
+| 31   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8609898107714702 |
+| 32   | basic+CSDN精华 | TfidfVectorizer(token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8602620087336245 |
+| 33   | basic+CSDN精华 | TfidfVectorizer(stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8580786026200873 |
+| 34   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.863901018922853  |
+| 35   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6, stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8631732168850073 |
+| 36   | basic+CSDN精华 | TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8631732168850073 |
+| 37   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8668122270742358 |
+
+以下是停用词列表：
+
+```
+"的", "了", "和", "呢", "啊", "哦",
+"就", "而", "或", "及", "与", "等",
+"这", "那", "之", "只", "个",
+"是", "在", "很", "有", "我", "你",
+"他", "她", "它", "我们", "你们", "他们",
+"自己", "什么", "怎么", "为什么", "因为", "所以",
+"如何", "可以", "是否", "是否能够", "能否",
+"是否可以", "能不能", "可以吗", "能不能够", "能否给出",
+"请问", "请教", "请告知", "请帮忙", "请解释",
+"请说明", "请指导", "请提供", "请提醒", "请确认",
+"请回答", "请说一下", "请描述", "请列举", "请比较",
+"请分析", "请解决", "请评价", "请推荐", "请指出",
+"请给出", "请阐述", "请讨论", "请注意", "请考虑",
+"谢谢","求求","高手","感激不尽","请"
+```
+
+可以发现，对 `TfidfVectorizer()` 的参数加以限制，还是能提升预测的准确率的。并且组合参数限制能带来更大的提升。但总体来说，提升幅度也并不是很大。
+
 ### 后期
 
-主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
+主要使用 `huggingface` 中的 bert 预训练模型，构建神经网络，进行深度学习。
 
 主要对于以下参数进行调整（已经尝试过的）。
 
 对于每组数据一般进行 100 轮迭代（将训练数据反复喂给模型），但由于算力问题，以及云端平台的不稳定性，有部分数据的轮数少一些，而且由于前期轮次的效果不是很好，所以就没有重新测试。
 
 - 预训练模型的选择
+
   - `bert-base-chinese`
   - `algolet/bert-large-chinese`
   - `allenai/longformer-base-4096`
-  
+
 - 下游模型中的神经网络层
 
   - `Model1`由四个全连接层组成。每个全连接层都由线性层和批量归一化层组成，并使用ReLU激活函数进行非线性变换。
+
+    ```
+    class Model1(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.fc1 = torch.nn.Sequential( torch.nn.Linear(768, 1600), torch.nn.BatchNorm1d(1600), torch.nn.ReLU(True))
+            self.fc2 = torch.nn.Sequential( torch.nn.Linear(1600, 800), torch.nn.BatchNorm1d(800), torch.nn.ReLU(True))
+            self.fc3 = torch.nn.Sequential( torch.nn.Linear(800, 200), torch.nn.BatchNorm1d(200), torch.nn.ReLU(True))
+            self.fc4 = torch.nn.Linear(200, 2)
+    
+        def forward(self, input_ids, attention_mask, token_type_ids):
+            input_ids = input_ids.to(device)
+            attention_mask = attention_mask.to(device)
+            token_type_ids = token_type_ids.to(device)
+            with torch.no_grad():
+                out = pretrained(input_ids=input_ids,
+                        attention_mask=attention_mask,
+                        token_type_ids=token_type_ids)
+            out = out.last_hidden_state[:, 0]
+            out = self.fc1(out)
+            out = self.fc2(out)
+            out = self.fc3(out)
+            out = self.fc4(out)
+            out = out.softmax(dim=1)
+            return out
+    ```
+
   - `Model2`是多层卷积神经网络。
 
+    ```
+    class Model2(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.fc1 = torch.nn.Sequential( torch.nn.Conv1d(1, 16, kernel_size=3,padding=1),torch.nn.BatchNorm1d(16), torch.nn.ReLU(True) )
+            self.fc2 = torch.nn.Sequential( torch.nn.Conv1d(16, 64, kernel_size=3,padding=1),torch.nn.BatchNorm1d(64), torch.nn.ReLU(True) )
+            self.fc3 = torch.nn.Sequential( torch.nn.Conv1d(64, 256, kernel_size=3,padding=1),torch.nn.BatchNorm1d(256), torch.nn.ReLU(True) )
+            self.fc4 = torch.nn.Sequential( torch.nn.Linear(256*768, 2), torch.nn.BatchNorm1d(2), torch.nn.ReLU(True))
+    
+        def forward(self, input_ids, attention_mask, token_type_ids):
+            input_ids = input_ids.to(device)
+            attention_mask = attention_mask.to(device)
+            token_type_ids = token_type_ids.to(device)
+            with torch.no_grad():
+                out = pretrained(input_ids=input_ids,
+                                attention_mask=attention_mask,
+                                token_type_ids=token_type_ids)
+            out = out.last_hidden_state[:, 0]
+            out = out.view(out.shape[0],-1,768)
+            out = self.fc1(out)
+            out = self.fc2(out)
+            out = self.fc3(out)
+            out = out.view(out.shape[0],-1)
+            out = self.fc4(out)
+            out = out.softmax(dim=1)
+            return out
+    ```
+
 - batch_size
+
   - 16
   - 32
-  
+
 - max_length（预训练模型接受一句话的最大长度）
+
   - 512
   - 1024（仅`algolet/bert-large-chinese` 可用）
   - 2048（仅`algolet/bert-large-chinese` 可用）
-  
+
   预训练模型限制了能接受的最大的长度，而我们有不少数据都是超过这个长度的，所以实际上模型接受的只是句子的一部分。而默认情况下，则是从句首截取指定长度。这也是一开始遇到的一个问题。而可能的解决办法有三种：
-  
+
   - [x] 随机在句子中选取一段。
   - [ ] 使用滑动窗口将句子拆成若干个句子。
   - [x] 调整模型使其能接受更长的句子，或使用其他模型。
-  
+
 - requires_grad（是否梯度回传，即是否修改预训练模型的参数，也就是微调 bert）
 
+  在实验的时候，设置为 `True` 会极大增加所需内存，需减小 batch_size，而在最初几轮迭代中表现
+
 - learning_rate（梯度下降时的学习率）
+
   - 1e-3
   - 5e-5
   - 5e-6
-  
+
 - weight_decay（减少过拟合的可能，设置过大可能导致欠拟合）
+
   - 1e-5
 
 以下是目前已经尝试过的参数及其数据（有些还在测试中）：
 
-| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 测试集预测准确率                 |
-| ----- | ------------------------------------------------------------ | -------------------------------- |
-| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   | ![](./classifier/results/2.png)  |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                                  |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 | ![](./classifier/results/8.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](./classifier/results/15.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      | ![](./classifier/results/12.png) |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             | ![](./classifier/results/5.png)  |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, 1e-5, Model1       | ![](./classifier/results/10.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            | ![](./classifier/results/7.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1      | ![](./classifier/results/11.png) |
-| basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             | ![](./classifier/results/6.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-6, 1e-5, Model1      |                                  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model1, random slice | ![](./classifier/results/13.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1, random slice | ![](./classifier/results/14.png) |
+| 编号 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 测试集预测准确率                 |
+| ---- | ----- | ------------------------------------------------------------ | -------------------------------- |
+| 1    | basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   | ![](./classifier/results/2.png)  |
+| 3    | basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 | ![](./classifier/results/8.png)  |
+| 4    | basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](./classifier/results/15.png) |
+| 5    | basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      | ![](./classifier/results/12.png) |
+| 6    | basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](./classifier/results/5.png)  |
+| 7    | basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model1      | ![](./classifier/results/10.png) |
+| 8    | basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            | ![](./classifier/results/7.png)  |
+| 9    | basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1      | ![](./classifier/results/11.png) |
+| 10   | basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            | ![](./classifier/results/6.png)  |
+| 11   | basic | 'bert-base-chinese', 32, 512, False, 5e-6, 1e-5, Model1      | ![](./classifier/results/16.png) |
+| 12   | basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model1, random slice | ![](./classifier/results/13.png) |
+| 13   | basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1, random slice | ![](./classifier/results/14.png) |
+
+令人惊讶的是，最后，使用 `bert-base-chinese`  的效果反而是最好的。这可能也与预训练模型的其他参数有关。可以看到，在数据中，最好的情况下，在 30~40 轮迭代前，准确率在不断上升，而之后则是进入平台期，准确率在 75%~80% 左右波动。但最后还是比第二周的随机森林效果要差。一方面，可能预训练模型还是有所限制；另一方面，由于知识水平有限，我们的下游模型的写法也并不是很成熟，像神经网络的相关知识也很浅薄，对应的库的 api 也不熟悉。再加上算力问题，调参和验证想法需要等待的时间也比较长。
+
+最终，用参数不同的 3 个准确率较高的基于 bert 的模型和 4 个基于随机森林的模型做集成学习的投票，在下发的测试集（相当于验证集）上的准确率在 84.1% 左右，并以此获得筛选后的数据。

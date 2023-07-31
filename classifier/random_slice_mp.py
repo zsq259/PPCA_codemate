@@ -74,8 +74,9 @@ def work(work_id, tokenizer, model_name, batch_size_, max_length, requires_grad_
     def collate(data):
         sents = [i[0] for i in data]
         labels = [i[1] for i in data]
-        st = random.randint(0, max(0, len(sents) - max_length - 1))
-        sents, labels = sents[st:], labels[st:]
+        for sent in sents:
+            st = random.randint(0, max(0, len(sent) - max_length - 1))
+            sents[i] = sent[st:]
         data = token.batch_encode_plus(batch_text_or_text_pairs=sents,
                                     truncation=True,
                                     #    padding=False,

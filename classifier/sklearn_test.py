@@ -6,7 +6,8 @@ from sklearn.naive_bayes import MultinomialNB, ComplementNB
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score
 from multiprocessing import Pool, Process
-import json, jieba, threading
+from stopwords import stopwords
+import json, jieba, threading, joblib
 
 datas = []
 labels = []
@@ -31,7 +32,7 @@ def get_file(file_name, tag):
 
 def get_data():
     global train_sum
-    get_file("datas/CSDN1.jsonl", 1)
+    # get_file("datas/CSDN1.jsonl", 1)
     get_file("datas/highQualityTrain.jsonl", 1)
     get_file("datas/lowQualityTrain.jsonl", 0)
     train_sum = len(datas)
@@ -40,23 +41,23 @@ def get_data():
 
 def work(op, vectorizer, classifier):
     X = vectorizer.fit_transform(datas)
-    X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.1, random_state=47)
-    # X_train, X_test, y_train, y_test = X[:train_sum], X[train_sum:], labels[:train_sum], labels[train_sum:]
+    # X_train, y_train = X, labels
+    # X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.1, random_state=47)
+    X_train, X_test, y_train, y_test = X[:train_sum], X[train_sum:], labels[:train_sum], labels[train_sum:]
     classifier.fit(X_train, y_train)
     print("train score:", op, classifier.score(X_train, y_train))
     print("test score:", op, classifier.score(X_test, y_test))
+    joblib.dump(classifier, 'random_forest_{}.pkl'.format(op))
+    joblib.dump(vectorizer, 'vectorizer_{}.pkl'.format(op))
+
 
 get_data()
 processs = []
 
-stop_words_file = 'stopwords.txt'
-stopwords = get_custom_stopwords(stop_words_file)
-
-
-processs.append(Process(target = work, args=(0, TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
-processs.append(Process(target = work, args=(1, TfidfVectorizer(max_df=0.6, stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
-processs.append(Process(target = work, args=(2, TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
-processs.append(Process(target = work, args=(3, TfidfVectorizer(stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(37, TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(35, TfidfVectorizer(max_df=0.6, stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(36, TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71))))
+processs.append(Process(target = work, args=(34, TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71))))
 
 for p in processs: p.start()
 

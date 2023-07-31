@@ -185,7 +185,7 @@ CSDN 网站分为两部分：
 
 [`so_spider`](crawler/stackoverflow/so_spider) 文件夹下则是利用 `scrapy` 框架，对所有具体问答页面进行爬取。
 
-如果需要提高爬虫速度的话，需要建立 ip 池解决请求太多被封 ip 的问题。但因为没有足够多的 ip 所以没能实现。
+如果需要提高爬虫速度的话，需要建立 ip 池解决请求太多被封 ip 的问题。但因为没有足够多的 ip 所以没能实现。（网上获取的免费 ip 不稳定，很容易失效）
 
 ## 分类器部分
 
@@ -219,28 +219,28 @@ CSDN 网站分为两部分：
 
 下表显示了训练的数据（训练集和测试集以 9:1 划分）：
 
-| 数据                                 | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
-| ------------------------------------ | ------------------------------------------------------------ | ------------------ | ------------------ |
-| basic                                | TfidfVectorizer(), RandomForestClassifier()                  | 0.9947319491788038 | 0.8345724907063197 |
-| basic                                | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9947319491788038 | 0.8392193308550185 |
-| basic                                | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8564197913438695 | 0.7379182156133829 |
-| basic                                | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.8562132011155872 | 0.7379182156133829 |
-| basic                                | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9947319491788038 | 0.7964684014869888 |
-| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8631732168850073 |
-| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8653566229985444 |
-| basic+CSDN精华                       | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8528078977180774 | 0.7561863173216885 |
-| basic+CSDN精华                       | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.8540216863570157 | 0.754730713245997  |
-| basic+CSDN精华                       | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957112801424178 | 0.8377001455604076 |
-| basic+CSDN精华（代码用 ```\n 包围）  | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8602620087336245 |
-| basic+CSDN精华（代码用 ```\n 包围）  | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
-| basic+CSDN精华（代码用 ```\n 包围）  | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8510276743809678 | 0.74745269286754   |
-| basic+CSDN精华（代码用 ```\n 包围）  | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.853050655445865  | 0.74745269286754   |
-| basic+CSDN精华（代码用 ```\n 包围）  | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957921993850137 | 0.8304221251819505 |
-| basic+CSDN精华（代码用 [code] 包围） | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8566229985443959 |
-| basic+CSDN精华（代码用 [code] 包围） | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
-| basic+CSDN精华（代码用 [code] 包围） | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8510276743809678 | 0.74745269286754   |
-| basic+CSDN精华（代码用 [code] 包围） | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.853050655445865  | 0.74745269286754   |
-| basic+CSDN精华（代码用 [code] 包围） | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957921993850137 | 0.8384279475982532 |
+| 编号 | 数据                                 | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
+| ---- | ------------------------------------ | ------------------------------------------------------------ | ------------------ | ------------------ |
+| 1    | basic                                | TfidfVectorizer(), RandomForestClassifier()                  | 0.9947319491788038 | 0.8345724907063197 |
+| 2    | basic                                | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9947319491788038 | 0.8392193308550185 |
+| 3    | basic                                | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8564197913438695 | 0.7379182156133829 |
+| 4    | basic                                | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.8562132011155872 | 0.7379182156133829 |
+| 5    | basic                                | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9947319491788038 | 0.7964684014869888 |
+| 6    | basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8631732168850073 |
+| 7    | basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8653566229985444 |
+| 8    | basic+CSDN精华                       | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8528078977180774 | 0.7561863173216885 |
+| 9    | basic+CSDN精华                       | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.8540216863570157 | 0.754730713245997  |
+| 10   | basic+CSDN精华                       | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957112801424178 | 0.8377001455604076 |
+| 11   | basic+CSDN精华（代码用 ```\n 包围）  | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8602620087336245 |
+| 12   | basic+CSDN精华（代码用 ```\n 包围）  | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
+| 13   | basic+CSDN精华（代码用 ```\n 包围）  | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8510276743809678 | 0.74745269286754   |
+| 14   | basic+CSDN精华（代码用 ```\n 包围）  | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.853050655445865  | 0.74745269286754   |
+| 15   | basic+CSDN精华（代码用 ```\n 包围）  | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957921993850137 | 0.8304221251819505 |
+| 16   | basic+CSDN精华（代码用 [code] 包围） | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8566229985443959 |
+| 17   | basic+CSDN精华（代码用 [code] 包围） | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
+| 18   | basic+CSDN精华（代码用 [code] 包围） | CountVectorizer(), MultinomialNB(alpha = 0.1)                | 0.8510276743809678 | 0.74745269286754   |
+| 19   | basic+CSDN精华（代码用 [code] 包围） | CountVectorizer(), ComplementNB(alpha = 0.1)                 | 0.853050655445865  | 0.74745269286754   |
+| 20   | basic+CSDN精华（代码用 [code] 包围） | Word2Vec(lines, vector_size = 20, window = 5 , min_count = 3, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 155, random_state = 43) | 0.9957921993850137 | 0.8384279475982532 |
 
 其中 `数据` 一栏的 `basic` 代表下发的已经标记好的之前爬取的 CSDN 和 Wikipedia 的问答。而 CSDN精华则默认为高质量。
 
@@ -250,32 +250,32 @@ CSDN 网站分为两部分：
 
 经过进一步调整 `RandomForestClassifier()` 参数后的数据：
 
-| 数据           | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
-| -------------- | ------------------------------------------------------------ | ------------------ | ------------------ |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8602620087336245 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=55)   | 0.9956303608998219 | 0.858806404657933  |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=200)  | 0.9957112801424178 | 0.8573508005822417 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=47) | 0.9957112801424178 | 0.8580786026200873 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=97) | 0.9957112801424178 | 0.8566229985443959 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=127) | 0.9957112801424178 | 0.8580786026200873 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=23) | 0.9957112801424178 | 0.8624454148471615 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=59) | 0.9957112801424178 | 0.8573508005822417 |
-| basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8624454148471615 |
+| 编号 | 数据           | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
+| ---- | -------------- | ------------------------------------------------------------ | ------------------ | ------------------ |
+| 21   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier()                  | 0.9957112801424178 | 0.8602620087336245 |
+| 22   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=55)   | 0.9956303608998219 | 0.858806404657933  |
+| 23   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=200)  | 0.9957112801424178 | 0.8573508005822417 |
+| 24   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=43) | 0.9957112801424178 | 0.8609898107714702 |
+| 25   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=47) | 0.9957112801424178 | 0.8580786026200873 |
+| 26   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=97) | 0.9957112801424178 | 0.8566229985443959 |
+| 27   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=127) | 0.9957112801424178 | 0.8580786026200873 |
+| 28   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=23) | 0.9957112801424178 | 0.8624454148471615 |
+| 29   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=59) | 0.9957112801424178 | 0.8573508005822417 |
+| 30   | basic+CSDN精华 | TfidfVectorizer(), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8624454148471615 |
 
 可以发现随机森林中决策树的数量以及随机数的选取对最终的准确率影响并不大。
 
 之后再尝试调整 `TfidfVectorizer()` 的参数：
 
-| 数据           | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
-| -------------- | ------------------------------------------------------------ | ------------------ | ------------------ |
-| basic+CSDN精华 | TfidfVectorizer(max_df=0.6), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8609898107714702 |
-| basic+CSDN精华 | TfidfVectorizer(token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8602620087336245 |
-| basic+CSDN精华 | TfidfVectorizer(stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8580786026200873 |
-| basic+CSDN精华 | TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.863901018922853  |
-| basic+CSDN精华 | TfidfVectorizer(max_df=0.6, stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8631732168850073 |
-| basic+CSDN精华 | TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8631732168850073 |
-| basic+CSDN精华 | TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8668122270742358 |
+| 编号 | 数据           | 模型                                                         | 训练集预测准确率   | 测试集预测准确率   |
+| ---- | -------------- | ------------------------------------------------------------ | ------------------ | ------------------ |
+| 31   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8609898107714702 |
+| 32   | basic+CSDN精华 | TfidfVectorizer(token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8602620087336245 |
+| 33   | basic+CSDN精华 | TfidfVectorizer(stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8580786026200873 |
+| 34   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b"), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.863901018922853  |
+| 35   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6, stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8631732168850073 |
+| 36   | basic+CSDN精华 | TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8631732168850073 |
+| 37   | basic+CSDN精华 | TfidfVectorizer(max_df=0.6, token_pattern=r"(?u)\b\w+\b", stop_words = stopwords), RandomForestClassifier(n_estimators=155, random_state=71) | 0.9957112801424178 | 0.8668122270742358 |
 
 以下是停用词列表：
 
@@ -408,7 +408,6 @@ CSDN 网站分为两部分：
 | 编号 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 测试集预测准确率                 |
 | ---- | ----- | ------------------------------------------------------------ | -------------------------------- |
 | 1    | basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   | ![](./classifier/results/2.png)  |
-| 2    | basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                                  |
 | 3    | basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 | ![](./classifier/results/8.png)  |
 | 4    | basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](./classifier/results/15.png) |
 | 5    | basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      | ![](./classifier/results/12.png) |
@@ -421,3 +420,6 @@ CSDN 网站分为两部分：
 | 12   | basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model1, random slice | ![](./classifier/results/13.png) |
 | 13   | basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1, random slice | ![](./classifier/results/14.png) |
 
+令人惊讶的是，最后，使用 `bert-base-chinese`  的效果反而是最好的。这可能也与预训练模型的其他参数有关。可以看到，在数据中，最好的情况下，在 30~40 轮迭代前，准确率在不断上升，而之后则是进入平台期，准确率在 75%~80% 左右波动。但最后还是比第二周的随机森林效果要差。一方面，可能预训练模型还是有所限制；另一方面，由于知识水平有限，我们的下游模型的写法也并不是很成熟，像神经网络的相关知识也很浅薄，对应的库的 api 也不熟悉。再加上算力问题，调参和验证想法需要等待的时间也比较长。
+
+最终，用参数不同的 3 个准确率较高的基于 bert 的模型和 4 个基于随机森林的模型做集成学习的投票，在下发的测试集（相当于验证集）上的准确率在 84.1% 左右，并以此获得筛选后的数据。
